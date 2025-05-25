@@ -4,8 +4,6 @@
 To Implement RSA Encryption Algorithm in Cryptography
 
 ## Algorithm:
-
-
 Step 1: Design of RSA Algorithm  
 The RSA algorithm is based on the mathematical difficulty of factoring the product of two large prime numbers. It involves generating a public and private key pair, where the public key is used for encryption, and the private key is used for decryption.
 
@@ -36,13 +34,44 @@ Step 5: **Security Foundation
 The security of RSA relies on the difficulty of factoring large numbers; thus, choosing sufficiently large prime numbers for \( p \) and \( q \) is crucial for security.
 
 ## Program:
+~~~
+#include <stdio.h>
+#include <string.h>
 
+int gcd(int a, int b) { return b ? gcd(b, a % b) : a; }
 
+int modExp(int base, int exp, int mod) {
+  int res = 1;
+  while (exp) {
+    if (exp & 1) res = (res * base) % mod;
+    base = (base * base) % mod;
+    exp >>= 1;
+  }
+  return res;
+}
 
+int modInv(int a, int m) {
+  int m0 = m, x0 = 0, x1 = 1;
+  while (a > 1) {
+    int q = a / m, t = m;
+    m = a % m; a = t;
+    t = x0; x0 = x1 - q * x0; x1 = t;
+  }
+  return x1 < 0 ? x1 + m0 : x1;
+}
 
+int main() {
+  int p = 61, q = 53, n = p * q, phi = (p - 1) * (q - 1), e = 17;
+  while (gcd(e, phi) != 1) e++;
+  int d = modInv(e, phi);
+  char msg[100]; printf("Enter plaintext: "); scanf("%s", msg);
+  printf("Encrypted: "); for (int i = 0; msg[i]; i++) printf("%d ", modExp(msg[i], e, n));
+  printf("\nDecrypted: "); for (int i = 0; msg[i]; i++) printf("%c", modExp(modExp(msg[i], e, n), d, n));
+  return 0;
+}
+~~~
 ## Output:
-
-
+![image](https://github.com/user-attachments/assets/d6ded162-f55d-419b-9267-81ca13249e1e)
 
 ## Result:
- The program is executed successfully.
+The program is executed successfully.
